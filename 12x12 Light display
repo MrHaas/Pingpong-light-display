@@ -1,0 +1,137 @@
+/* this is used to write code to a 12 by 12 display of LED RGB inidividually controlled lights.  0 is the bottom left corner of the screen.
+ *  goal is to have students create all the letters.  Then we can just quickly change the message scrolling across.
+ *  problems.....how to get a second letter started when first letter is half way accross.
+ */
+
+#include <FastLED.h>
+#define NUM_LEDS 144  // total number of lights in the display
+#define LED_PIN 2   // the pin for the arduino
+#define shapenum 37  // number of numbers in the array
+CRGB led[NUM_LEDS];
+
+int LetA[37] = {10, 138, 126, 114, 115, 100, 91, 92, 75, 68, 69, 50, 45, 46, 25, 22, 23, 0, 113, 102, 89, 78, 76, 64, 63, 56, 39, 32, 33, 14, 13, 10, 51, 52, 53, 54, 55}; // creates the array
+
+void setup() {
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(led, NUM_LEDS);
+  Serial.begin(9600);
+}  // end void setup
+
+
+
+void loop() {
+  clearscreen(255, 255, 255); //  send red, green, blue
+  delay (400);
+  moveshape(LetA, 37, 200,255,255,0); // send array name, array size, speed to move, red, green, blue
+  flash(LetA, 37, 2000, 255, 0, 0); //send : array name, array size, length to display, red, green, blue
+} // end void loop
+
+
+
+
+
+
+void clearscreen(int r, int g, int b) {  // must send the colours for red, green blue
+  for (int i = 0; i < NUM_LEDS; i++) {// clears the field to colour
+    led[i] = CRGB(r, g, b);
+  }
+  FastLED.show();
+}// end clearscreen
+
+
+void flash(int shape[], int arraysize, int displayspeed, int r, int g, int b) {  // flashes a letter.  send the array name, array size, length to display, red, green, blue
+  for (int x = 0; x < arraysize; x++) {
+    int bulbnum = shape[x];
+    led[bulbnum] = CRGB(r, g, b); // turns yellow
+  }
+  FastLED.show();
+  delay(displayspeed);
+}  // end flash
+
+
+void moveshape(int shape[], int arraysize, int displayspeed, int r, int g, int b) {// send shape array, array size, and speed to display, red, green, blue
+
+  for (int i = 0; i < 12; i++) {
+    for (int x = 0; x < arraysize; x++) {
+      int bulbnum = shape[x];
+      if (bulbnum < 12) {                 // row 1  +
+        if (bulbnum + i > 11) {
+          bulbnum = 1000000;
+        }
+        bulbnum = bulbnum + i;
+
+      }
+      if ((bulbnum > 11) && (bulbnum < 24)) {  // row 2  -
+        if (bulbnum - i < 12) {
+          bulbnum = 800000;
+        }
+        bulbnum = bulbnum  - i;
+
+      }
+      if ((bulbnum >= 24) && (bulbnum <= 35)) {  // row 3  +
+        if (bulbnum > 35) {
+          bulbnum = 800000;
+        }
+        bulbnum = bulbnum  + i;
+      }
+      if ((bulbnum >= 36) && (bulbnum <= 47)) {  // row 4  -
+        if (bulbnum - i < 36) {
+          bulbnum = 800000;
+        }
+        bulbnum = bulbnum  - i;
+      }
+      if ((bulbnum >= 48) && (bulbnum <= 59)) {  // row 5 +
+        if (bulbnum + i > 59) {
+          bulbnum = 200000;
+        }
+        bulbnum = bulbnum  + i;
+      }
+      if ((bulbnum >= 60) && (bulbnum <= 71)) {  // row 6 -
+        if (bulbnum - i < 60) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  - i;
+      }
+      if ((bulbnum >= 72) && (bulbnum <= 83)) {  // row 7 +
+        if (bulbnum + i > 83) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  + i;
+      }
+      if ((bulbnum >= 84) && (bulbnum <= 95)) {  // row 8 -
+        if (bulbnum - i < 84) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  - i;
+      }
+      if ((bulbnum >= 96) && (bulbnum <= 107)) {  // row 9 +
+        if (bulbnum + i > 107) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  + i;
+      }
+      if ((bulbnum >= 108) && (bulbnum <= 119)) {  // row 10 -
+        if (bulbnum - i < 108) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  - i;
+      }
+      if ((bulbnum >= 120) && (bulbnum <= 131)) {  // row 11+
+        if (bulbnum + i > 131) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  + i;
+      }
+      if ((bulbnum - i >= 132) && (bulbnum <= 144)) { // row 12 1
+        if (bulbnum - i < 132) {
+          bulbnum = 2000000;
+        }
+        bulbnum = bulbnum  - i;
+      }
+
+      led[bulbnum] = CRGB(r,g,b); // turns yellow
+    }
+    FastLED.show();
+    delay(displayspeed);
+    clearscreen(0,0,255);
+  }
+}// end void moveshape
